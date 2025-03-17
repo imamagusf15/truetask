@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:truetask/app/modules/home/controllers/calendar_controller.dart';
+import 'package:truetask/app/modules/home/controllers/overview_controller.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -8,5 +10,7 @@ class HomeBinding extends Bindings {
     Get.lazyPut<HomeController>(
       () => HomeController(),
     );
+    Get.put<OverviewController>(OverviewController());
+    Get.put<CalendarController>(CalendarController());
   }
 }
