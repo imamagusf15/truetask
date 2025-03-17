@@ -1,32 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:truetask/app/data/models/task.dart';
+import 'package:truetask/app/routes/app_pages.dart';
 
 class GroupedTaskItem extends StatelessWidget {
-  final String title;
-  final DateTime startDate;
-  final DateTime endDate;
-  final List<String> users;
-  final void Function()? onTap;
+  final Task task;
+  final String projectName;
   const GroupedTaskItem({
     super.key,
-    this.onTap,
-    required this.title,
-    required this.startDate,
-    required this.endDate,
-    required this.users,
+    required this.task,
+    required this.projectName,
   });
 
   @override
   Widget build(BuildContext context) {
+    final formatDate = DateFormat("dd-MM-yyyy");
     return Card(
       color: Colors.white,
       elevation: 5,
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: onTap,
+        onTap: () => Get.toNamed(Routes.TASK_DETAIL, arguments: task.id),
         child: Container(
           padding: const EdgeInsets.all(16),
-          height: 120,
-          width: 350,
+          height: 100,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -34,7 +32,7 @@ class GroupedTaskItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    title,
+                    task.title!,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   SizedBox(
@@ -44,30 +42,35 @@ class GroupedTaskItem extends StatelessWidget {
                       clipBehavior: Clip.none,
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
-                      itemCount: users.length,
+                      itemCount:
+                          task.assignedTo == null ? 1 : task.assignedTo!.length,
                       itemBuilder: (context, index) {
-                        if (index <= 2) {
-                          return Align(
+                        if (task.assignedTo != null) {
+                          final user = task.assignedTo![index];
+                          if (index <= 2) {
+                            return Align(
                               alignment: AlignmentDirectional.centerStart,
                               widthFactor: 0.55,
                               child: CircleAvatar(
                                 backgroundColor: Colors.blue,
                                 maxRadius: 18,
-                                child: Text(users[index].substring(0, 1)),
-                              ));
-                        } else if (index == 3) {
-                          return Align(
-                            alignment: AlignmentDirectional.centerStart,
-                            widthFactor: 0.55,
-                            child: CircleAvatar(
-                              backgroundColor: Colors.blue,
-                              maxRadius: 18,
-                              child: Text('+${users.length - index}'),
-                            ),
-                          );
-                        } else {
-                          return null;
+                                child: Text(user.substring(0, 1)),
+                              ),
+                            );
+                          } else if (index == 3) {
+                            return Align(
+                              alignment: AlignmentDirectional.centerStart,
+                              widthFactor: 0.55,
+                              child: CircleAvatar(
+                                backgroundColor: Colors.blue,
+                                maxRadius: 18,
+                                child:
+                                    Text('+${task.assignedTo!.length - index}'),
+                              ),
+                            );
+                          }
                         }
+                        return null;
                       },
                     ),
                   )
@@ -81,14 +84,14 @@ class GroupedTaskItem extends StatelessWidget {
                     Icons.date_range_outlined,
                     color: Colors.grey,
                   ),
-                  const Text('12-12-2012'),
+                  Text(formatDate.format(task.startDate!)),
                   Image.asset('assets/icon/arrow.png'),
                   const Icon(
                     Icons.date_range_outlined,
                     color: Colors.lightBlue,
                   ),
-                  const Text(
-                    '12-12-2012',
+                  Text(
+                    formatDate.format(task.dueDate!),
                     style: TextStyle(color: Colors.lightBlue),
                   ),
                 ],

@@ -8,14 +8,14 @@ import '../controllers/projects_controller.dart';
 class ProjectsBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<OngoingProjectController>(
-      () => OngoingProjectController(),
-    );
     Get.lazyPut<ProjectsController>(
       () => ProjectsController(),
     );
-    Get.lazyPut<CompletedProjectController>(
-      () => CompletedProjectController(),
+    Get.put<OngoingProjectController>(
+      OngoingProjectController(),
+    );
+    Get.put<CompletedProjectController>(
+      CompletedProjectController(),
     );
   }
 }

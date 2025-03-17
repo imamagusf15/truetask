@@ -11,6 +11,7 @@ class CustomTextField extends StatelessWidget {
   final InputBorder? errorBorder;
   final InputBorder? focusedErrorBorder;
   final TextInputType keyboardType;
+  final Color? textFieldColor;
   final bool obscureText;
   final bool readOnly;
 
@@ -24,6 +25,7 @@ class CustomTextField extends StatelessWidget {
     this.readOnly = false,
     this.prefixIcon,
     this.suffixIcon,
+    this.textFieldColor,
     this.enabledBorder,
     this.focusedBorder,
     this.errorBorder,
@@ -39,8 +41,10 @@ class CustomTextField extends StatelessWidget {
       obscureText: obscureText,
       readOnly: readOnly,
       decoration: InputDecoration(
-        contentPadding: const EdgeInsets.all(12),
+        contentPadding: const EdgeInsets.all(16),
         isDense: true,
+        filled: textFieldColor == null ? false : true,
+        fillColor: textFieldColor,
         hintText: hintText,
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,

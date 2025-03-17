@@ -1,28 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:truetask/app/data/models/project.dart';
+import 'package:truetask/app/data/models/task.dart';
+import 'package:truetask/app/routes/app_pages.dart';
 
 class ProjectCardItem extends StatelessWidget {
-  final String title;
-  final DateTime startDate;
-  final DateTime endDate;
+  final Project project;
   final List<String> users;
-  final void Function()? onTap;
+  final List<Task> tasks;
   const ProjectCardItem({
     super.key,
-    this.onTap,
-    required this.title,
-    required this.startDate,
-    required this.endDate,
+    required this.project,
     required this.users,
+    required this.tasks,
   });
 
   @override
   Widget build(BuildContext context) {
+    final formatDate = DateFormat("dd-MM-yyyy");
+    final completedTask =
+        tasks.where((task) => task.status == 'Completed').toList();
+
     return Card(
       color: Colors.white,
       elevation: 5,
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: onTap,
+        onTap: () => Get.toNamed(Routes.PROJECT_DETAIL, arguments: project.id),
         child: Container(
           padding: const EdgeInsets.all(16),
           height: 140,
@@ -34,11 +39,10 @@ class ProjectCardItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    title,
+                    project.name!,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   SizedBox(
-                    width: 90,
                     height: 36,
                     child: ListView.builder(
                       clipBehavior: Clip.none,
@@ -48,7 +52,7 @@ class ProjectCardItem extends StatelessWidget {
                       itemBuilder: (context, index) {
                         if (index <= 2) {
                           return Align(
-                            alignment: AlignmentDirectional.centerStart,
+                            alignment: AlignmentDirectional.topEnd,
                             widthFactor: 0.55,
                             child: CircleAvatar(
                               backgroundColor: Colors.blue,
@@ -58,7 +62,7 @@ class ProjectCardItem extends StatelessWidget {
                           );
                         } else if (index == 3) {
                           return Align(
-                            alignment: AlignmentDirectional.centerStart,
+                            alignment: AlignmentDirectional.centerEnd,
                             widthFactor: 0.55,
                             child: CircleAvatar(
                               backgroundColor: Colors.blue,
@@ -82,14 +86,14 @@ class ProjectCardItem extends StatelessWidget {
                     Icons.date_range_outlined,
                     color: Colors.grey,
                   ),
-                  const Text('startDate'),
+                  Text(formatDate.format(project.startDate!)),
                   Image.asset('assets/icon/arrow.png'),
                   const Icon(
                     Icons.date_range_outlined,
                     color: Colors.lightBlue,
                   ),
-                  const Text(
-                    'endDate',
+                  Text(
+                    formatDate.format(project.dueDate!),
                     style: TextStyle(color: Colors.lightBlue),
                   ),
                 ],
@@ -97,23 +101,30 @@ class ProjectCardItem extends StatelessWidget {
               const SizedBox(height: 8),
               Row(
                 children: [
-                  const Text('50%'),
+                  Text(
+                    tasks.isNotEmpty
+                        ? '${(completedTask.length / tasks.length * 100).toInt()}%'
+                        : '0%',
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: LinearProgressIndicator(
-                      value: 0.5,
+                      value: tasks.isNotEmpty
+                          ? completedTask.length / tasks.length
+                          : 0.0,
                       minHeight: 8,
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                   const SizedBox(width: 8),
                   RichText(
-                    text: const TextSpan(
+                    text: TextSpan(
                       children: [
                         TextSpan(
-                            text: '24', style: TextStyle(color: Colors.grey)),
+                            text: completedTask.length.toString(),
+                            style: TextStyle(color: Colors.grey)),
                         TextSpan(
-                            text: '/48 tasks',
+                            text: '/${tasks.length} tasks',
                             style: TextStyle(color: Colors.black))
                       ],
                     ),

@@ -10,7 +10,8 @@ class Validator {
   }
 
   static String? validateName({required String name}) {
-    if (!name.isAlphabetOnly) {
+    final regex = RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]');
+    if (regex.hasMatch(name)) {
       return 'Nama hanya berisi alfabet';
     } else {
       return null;
@@ -31,6 +32,21 @@ class Validator {
     if (password.isEmpty) {
       return 'Password tidak boleh kosong';
     } else if (password.length < 6 || password.length >= 12) {
+      return 'Password harus terdiri dari 6-12 karakter';
+    } else {
+      return null;
+    }
+  }
+
+  static String? validateConfPassword({
+    required String firstPassword,
+    required String confPassword,
+  }) {
+    if (confPassword != firstPassword) {
+      return 'Konfirmasi Password tidak sesuai';
+    } else if (confPassword.isEmpty) {
+      return 'Password tidak boleh kosong';
+    } else if (confPassword.length < 6 || confPassword.length >= 12) {
       return 'Password harus terdiri dari 6-12 karakter';
     } else {
       return null;

@@ -9,19 +9,38 @@ class CompletedProjectView extends GetView<CompletedProjectController> {
   const CompletedProjectView({super.key});
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      itemCount: 10,
-      separatorBuilder: (context, index) => const SizedBox(height: 8),
-      itemBuilder: (context, index) => ProjectCardItem(
-        onTap: () {
-          controller.increment();
-          print(controller.count);
-        },
-        title: 'Design UI',
-        startDate: DateTime.now(),
-        endDate: DateTime.now(),
-        users: const ['0', '1', '2', '3', '4'],
-      ),
+    return Obx(
+      () => controller.searchQuery.value == ''
+          ? ListView.separated(
+              itemCount: controller.completedProjects.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 8),
+              itemBuilder: (context, index) {
+                final project = controller.completedProjects[index];
+                return Obx(() {
+                  final projectTasks = controller.getProjectTasks(project.id!);
+                  return ProjectCardItem(
+                    project: project,
+                    users: project.members!,
+                    tasks: projectTasks,
+                  );
+                });
+              },
+            )
+          : ListView.separated(
+              itemCount: controller.searchedProject.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 8),
+              itemBuilder: (context, index) {
+                final project = controller.searchedProject[index];
+                return Obx(() {
+                  final projectTasks = controller.getProjectTasks(project.id!);
+                  return ProjectCardItem(
+                    project: project,
+                    users: project.members!,
+                    tasks: projectTasks,
+                  );
+                });
+              },
+            ),
     );
   }
 }

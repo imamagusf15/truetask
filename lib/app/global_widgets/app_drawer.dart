@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:truetask/app/modules/home/controllers/home_controller.dart';
 import 'package:truetask/app/routes/app_pages.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -7,6 +8,7 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<HomeController>();
     return Drawer(
       child: Column(
         children: [
@@ -28,19 +30,19 @@ class AppDrawer extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  const Text(
-                    "profileName",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const Text(
-                    "email@gmail.com",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
+                  Obx(() => Text(
+                        controller.userModel.value.name ?? '',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )),
+                  Obx(() => Text(
+                        controller.userModel.value.email ?? '',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      )),
                 ],
               ),
             ),
@@ -65,7 +67,18 @@ class AppDrawer extends StatelessWidget {
                 fontSize: 16,
               ),
             ),
-            onTap: () => Get.offAllNamed(Routes.HOME),
+            onTap: () => Get.toNamed(Routes.ABOUT),
+          ),
+          ListTile(
+            leading: const Icon(Icons.notifications_none),
+            title: const Text(
+              "Notifications",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+            onTap: () => Get.toNamed(Routes.NOTIFICATION),
           ),
           const Spacer(),
           ListTile(
@@ -77,7 +90,7 @@ class AppDrawer extends StatelessWidget {
                 fontSize: 16,
               ),
             ),
-            onTap: () => Get.offAllNamed(Routes.HOME),
+            onTap: () => controller.logout(),
           ),
           const SizedBox(height: 100)
         ],

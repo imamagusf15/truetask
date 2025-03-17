@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
 class CustomSearchBar extends StatelessWidget {
-  const CustomSearchBar({super.key});
+  const CustomSearchBar({
+    super.key,
+    this.onChanged,
+    this.filterPressed,
+  });
+
+  final void Function(String)? onChanged;
+  final void Function()? filterPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -17,12 +24,13 @@ class CustomSearchBar extends StatelessWidget {
         ],
       ),
       child: TextField(
+        onChanged: onChanged,
         decoration: InputDecoration(
           hintStyle: TextStyle(color: Colors.grey.shade400),
           contentPadding: EdgeInsets.zero,
           prefixIcon: Image.asset('assets/icon/search.png'),
           suffixIcon: IconButton(
-            onPressed: () {},
+            onPressed: filterPressed,
             icon: Image.asset('assets/icon/filter.png'),
           ),
           isDense: true,

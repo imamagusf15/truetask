@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:truetask/app/global_widgets/task_card.dart';
+import 'package:truetask/app/modules/home/controllers/calendar_controller.dart';
 
-class CalendarPage extends StatelessWidget {
+class CalendarPage extends GetView<CalendarController> {
   const CalendarPage({super.key});
 
   @override
@@ -11,12 +15,14 @@ class CalendarPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CalendarDatePicker(
-            initialDate: DateTime.now(),
+            initialDate: controller.selectedDate.value,
             firstDate: DateTime(2000),
             lastDate: DateTime(2035),
-            onDateChanged: (value) {},
+            onDateChanged: (value) {
+              controller.selectedDate.value = value;
+            },
           ),
-          const Row(
+          Row(
             children: [
               CircleAvatar(
                 backgroundColor: Colors.blue,
@@ -26,18 +32,36 @@ class CalendarPage extends StatelessWidget {
                 ),
               ),
               SizedBox(width: 8),
-              Text(
-                "selectedDay",
-                style: TextStyle(fontWeight: FontWeight.bold),
+              Obx(
+                () => Text(
+                  DateFormat("dd-MM-yyyy")
+                      .format(controller.selectedDate.value),
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               )
             ],
           ),
           const SizedBox(height: 8),
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: 5,
-            itemBuilder: (context, index) => Text("task $index"),
-          )
+          Obx(
+            () => ListView.separated(
+              shrinkWrap: true,
+              itemCount: controller.tasks.length,
+              separatorBuilder: (context, index) => SizedBox(height: 4),
+              itemBuilder: (context, index) {
+                final task = controller.tasks[index];
+                if (task.projectId == 'no-project') {
+                  return TaskCardItem(task: task, projectName: 'No Project');
+                } else {
+                  final projectName = controller.projects
+                      .where((project) => project.id == task.projectId)
+                      .map((e) => e.name!)
+                      .single;
+
+                  return TaskCardItem(task: task, projectName: projectName);
+                }
+              },
+            ),
+          ),
         ],
       ),
     );

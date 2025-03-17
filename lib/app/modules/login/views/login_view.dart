@@ -6,6 +6,7 @@ import 'package:truetask/app/core/utils/field_validator.dart';
 import 'package:truetask/app/global_widgets/custom_button.dart';
 import 'package:truetask/app/global_widgets/custom_google_button.dart';
 import 'package:truetask/app/global_widgets/custom_textfield.dart';
+import 'package:truetask/app/routes/app_pages.dart';
 
 import '../controllers/login_controller.dart';
 
@@ -42,32 +43,35 @@ class LoginView extends GetView<LoginController> {
                       prefixIcon:
                           Image.asset('assets/icon/mail.png', width: 15),
                     ),
+                    SizedBox(height: 4),
                     Obx(
                       () => CustomTextField(
                         controller: controller.passwordController,
                         validator: (value) =>
                             Validator.validatePassword(password: value!),
                         keyboardType: TextInputType.visiblePassword,
-                        obscureText: !controller.passVisible.value,
+                        obscureText: controller.isObscure.value,
                         hintText: 'Password',
                         prefixIcon: Image.asset('assets/icon/lock.png'),
                         suffixIcon: IconButton(
-                          onPressed: () => controller.passVisible.toggle(),
-                          icon: controller.passVisible.value
-                              ? const Icon(Icons.visibility_outlined)
-                              : const Icon(Icons.visibility_off_outlined),
+                          onPressed: () => controller.isObscure.toggle(),
+                          icon: controller.isObscure.value
+                              ? const Icon(Icons.visibility_off_outlined)
+                              : const Icon(Icons.visibility_outlined),
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-              CustomButton(
-                text: 'Sign In',
-                onPressed: () {
-                  if (controller.formKey.currentState!.validate()) {}
-                },
-              ),
+              Obx(() => CustomButton(
+                    content: controller.isLoading.value
+                        ? Center(child: CircularProgressIndicator())
+                        : Text("Sign In"),
+                    onPressed: controller.isLoading.value
+                        ? null
+                        : () async => await controller.signIn(),
+                  )),
               Row(children: [
                 const Expanded(child: Divider()),
                 const SizedBox(width: 15),
@@ -79,7 +83,7 @@ class LoginView extends GetView<LoginController> {
                 const Expanded(child: Divider()),
               ]),
               CustomGoogleButton(
-                onPressed: () {},
+                onPressed: () async => await controller.signInWithGoogle(),
                 text: 'Sign In With Google',
               ),
               const SizedBox(height: 40),
@@ -93,7 +97,8 @@ class LoginView extends GetView<LoginController> {
                     TextSpan(
                       text: 'Create one',
                       style: const TextStyle(color: Colors.lightBlue),
-                      recognizer: TapGestureRecognizer()..onTap = () {},
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () => Get.offNamed(Routes.REGISTER),
                     ),
                   ],
                 ),

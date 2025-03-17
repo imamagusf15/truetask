@@ -7,16 +7,16 @@
         {
             "name": "truetask",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "toolArgs": [
+                "--no-enable-impeller",
+            ],
         },
         {
             "name": "truetask (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile",
-            "toolArgs": [
-                "--no-enable-impeller",
-            ],
         },
         {
             "name": "truetask (release mode)",

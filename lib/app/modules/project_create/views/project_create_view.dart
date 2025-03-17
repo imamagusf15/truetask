@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:truetask/app/core/utils/field_validator.dart';
 import 'package:truetask/app/global_widgets/custom_button.dart';
 import 'package:truetask/app/global_widgets/custom_textfield.dart';
 
@@ -16,112 +17,94 @@ class CreateProjectView extends GetView<CreateProjectController> {
         title: const Text('New Project'),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Image.asset('assets/image/create-bg.jpg'),
-          Expanded(
-            child: ListView(
-              shrinkWrap: true,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              children: [
-                const Text('Title'),
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.grey[350],
-                      borderRadius: BorderRadius.circular(12)),
-                  child: CustomTextField(
-                    controller: controller.nameController,
-                    hintText: 'insert project title..',
-                    enabledBorder: noBorder,
-                    focusedBorder: activeBorder,
-                  ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16.0),
+        child: Form(
+          key: controller.formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Image.asset('assets/image/create-bg.jpg'),
+              const Text('Title'),
+              CustomTextField(
+                validator: (value) => Validator.validateField(field: value!),
+                textFieldColor: Colors.grey[350],
+                controller: controller.nameController,
+                hintText: 'insert project title..',
+                enabledBorder: noBorder,
+                focusedBorder: activeBorder,
+              ),
+              const SizedBox(height: 8),
+              const Text('Description'),
+              CustomTextField(
+                validator: (value) => Validator.validateField(field: value!),
+                textFieldColor: Colors.grey[350],
+                controller: controller.descriptionController,
+                hintText: 'insert project description',
+                enabledBorder: noBorder,
+                focusedBorder: activeBorder,
+              ),
+              const SizedBox(height: 8),
+              const Text('Start date'),
+              CustomTextField(
+                validator: (value) => Validator.validateField(field: value!),
+                textFieldColor: Colors.grey[350],
+                controller: controller.startDateController,
+                hintText: 'choose project start date',
+                enabledBorder: noBorder,
+                focusedBorder: activeBorder,
+                readOnly: true,
+                suffixIcon: IconButton(
+                  onPressed: () async {
+                    final selectedDate = await controller.datePicker(context);
+                    if (selectedDate != null) {
+                      controller.selectedDate.value =
+                          DateFormat("yyyy-MM-dd").format(selectedDate);
+                      controller.startDateController.text =
+                          controller.selectedDate.value;
+                    }
+                  },
+                  icon: const Icon(Icons.date_range),
                 ),
-                const SizedBox(height: 8),
-                const Text('Description'),
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.grey[350],
-                      borderRadius: BorderRadius.circular(12)),
-                  child: CustomTextField(
-                    controller: controller.descriptionController,
-                    hintText: 'insert project description',
-                    enabledBorder: noBorder,
-                    focusedBorder: activeBorder,
-                  ),
+              ),
+              const SizedBox(height: 8),
+              const Text('End date'),
+              CustomTextField(
+                validator: (value) => Validator.validateField(field: value!),
+                textFieldColor: Colors.grey[350],
+                controller: controller.endDateController,
+                hintText: 'choose project end date',
+                enabledBorder: noBorder,
+                focusedBorder: activeBorder,
+                readOnly: true,
+                suffixIcon: IconButton(
+                  onPressed: () async {
+                    final selectedDate = await controller.datePicker(context);
+                    if (selectedDate != null) {
+                      controller.selectedDate.value =
+                          DateFormat("yyyy-MM-dd").format(selectedDate);
+                      controller.endDateController.text =
+                          controller.selectedDate.value;
+                    }
+                  },
+                  icon: const Icon(Icons.date_range),
                 ),
-                const SizedBox(height: 8),
-                const Text('Start date'),
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.grey[350],
-                      borderRadius: BorderRadius.circular(12)),
-                  child: CustomTextField(
-                    controller: controller.startDateController,
-                    hintText: 'choose project start date',
-                    enabledBorder: noBorder,
-                    focusedBorder: activeBorder,
-                    readOnly: true,
-                    suffixIcon: IconButton(
-                      onPressed: () async {
-                        final selectedDate =
-                            await controller.datePicker(context);
-                        if (selectedDate != null) {
-                          controller.selectedDate.value =
-                              DateFormat("dd-MM-yyyy").format(selectedDate);
-                          controller.startDateController.text =
-                              controller.selectedDate.value;
-                        }
-                      },
-                      icon: const Icon(
-                        Icons.date_range,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Text('End date'),
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.grey[350],
-                      borderRadius: BorderRadius.circular(12)),
-                  child: CustomTextField(
-                    controller: controller.endDateController,
-                    hintText: 'choose project end date',
-                    enabledBorder: noBorder,
-                    focusedBorder: activeBorder,
-                    readOnly: true,
-                    suffixIcon: IconButton(
-                      onPressed: () async {
-                        final selectedDate =
-                            await controller.datePicker(context);
-                        if (selectedDate != null) {
-                          controller.selectedDate.value =
-                              DateFormat("dd-MM-yyyy").format(selectedDate);
-                          controller.endDateController.text =
-                              controller.selectedDate.value;
-                        }
-                      },
-                      icon: const Icon(
-                        Icons.date_range,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 40),
-                CustomButton(
-                  text: 'Add Project',
-                  onPressed: () => controller.addProject(),
-                )
-              ],
-            ),
+              ),
+              const SizedBox(height: 40),
+              CustomButton(
+                content: Text('Add Project'),
+                onPressed: () => controller.addProject(),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
-  final noBorder = const OutlineInputBorder(
+  final noBorder = OutlineInputBorder(
     borderSide: BorderSide.none,
+    borderRadius: BorderRadius.circular(12),
   );
   final activeBorder = OutlineInputBorder(
     borderSide: const BorderSide(color: Colors.lightBlue, width: 1),

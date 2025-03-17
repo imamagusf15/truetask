@@ -38,8 +38,8 @@ class ProjectsView extends GetView<ProjectsController> {
                     AppbarMenuButton(
                       menuItemList: (context) => [
                         PopupMenuItem(
-                          child: const Text('Add Task'),
-                          onTap: () => Get.toNamed(Routes.CREATE_TASK),
+                          child: const Text('Add Project'),
+                          onTap: () => Get.toNamed(Routes.CREATE_PROJECT),
                         ),
                       ],
                     ),
@@ -60,17 +60,20 @@ class ProjectsView extends GetView<ProjectsController> {
                       fontSize: 18, fontWeight: FontWeight.w500),
                   unselectedLabelColor: Colors.grey,
                   tabs: const [
-                    Tab(text: 'Projects'),
+                    Tab(text: 'Ongoing'),
                     Tab(text: 'Completed'),
                   ],
                 ),
-                const CustomSearchBar(),
+                CustomSearchBar(
+                  onChanged: (value) => controller.getDataBySearch(value),
+                  filterPressed: () {},
+                ),
               ],
             ),
           ),
         ),
         drawer: const AppDrawer(),
-        body: const Padding(
+        body: Padding(
           padding: EdgeInsets.all(16.0),
           child: TabBarView(
             clipBehavior: Clip.none,

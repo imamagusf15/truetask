@@ -11,10 +11,11 @@ class SplashView extends GetView<SplashController> {
     return Scaffold(
       body: SafeArea(
         child: Center(
-            child: Image.asset(
-          'assets/image/truetask-logo.png',
-          scale: 2.5,
-        )),
+          child: Image.asset(
+            'assets/image/truetask-logo.png',
+            scale: 2.5,
+          ),
+        ),
       ),
     );
   }

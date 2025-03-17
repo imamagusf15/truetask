@@ -49,7 +49,10 @@ class HomeView extends GetView<HomeController> {
                     ),
                   ],
                 ),
-                const CustomSearchBar(),
+                CustomSearchBar(
+                  onChanged: (value) => controller.getDataBySearch(value),
+                  filterPressed: () {},
+                ),
                 TabBar(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 72, vertical: 8),

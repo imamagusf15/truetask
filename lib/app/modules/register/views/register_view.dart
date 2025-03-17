@@ -6,6 +6,7 @@ import 'package:truetask/app/core/utils/field_validator.dart';
 import 'package:truetask/app/global_widgets/custom_button.dart';
 import 'package:truetask/app/global_widgets/custom_google_button.dart';
 import 'package:truetask/app/global_widgets/custom_textfield.dart';
+import 'package:truetask/app/routes/app_pages.dart';
 
 import '../controllers/register_controller.dart';
 
@@ -51,6 +52,7 @@ class RegisterView extends GetView<RegisterController> {
                       hintText: 'Name',
                       prefixIcon: Image.asset('assets/icon/person.png'),
                     ),
+                    SizedBox(height: 4),
                     CustomTextField(
                       controller: controller.emailController,
                       validator: (value) =>
@@ -60,48 +62,55 @@ class RegisterView extends GetView<RegisterController> {
                       prefixIcon:
                           Image.asset('assets/icon/mail.png', width: 15),
                     ),
+                    SizedBox(height: 4),
                     Obx(
                       () => CustomTextField(
                         controller: controller.passwordController,
                         validator: (value) =>
                             Validator.validatePassword(password: value!),
                         keyboardType: TextInputType.visiblePassword,
-                        obscureText: !controller.passVisible.value,
+                        obscureText: controller.isObscure.value,
                         hintText: 'Password',
                         prefixIcon: Image.asset('assets/icon/lock.png'),
                         suffixIcon: IconButton(
-                          onPressed: () => controller.passVisible.toggle(),
-                          icon: controller.passVisible.value
-                              ? const Icon(Icons.visibility_outlined)
-                              : const Icon(Icons.visibility_off_outlined),
+                          onPressed: () => controller.isObscure.toggle(),
+                          icon: controller.isObscure.value
+                              ? const Icon(Icons.visibility_off_outlined)
+                              : const Icon(Icons.visibility_outlined),
                         ),
                       ),
                     ),
+                    SizedBox(height: 4),
                     Obx(
                       () => CustomTextField(
                         controller: controller.confPassController,
-                        validator: (value) =>
-                            controller.validateConfPassword(value),
+                        validator: (value) => Validator.validateConfPassword(
+                          firstPassword: controller.passwordController.text,
+                          confPassword: value!,
+                        ),
                         keyboardType: TextInputType.visiblePassword,
-                        obscureText: !controller.confPassVisible.value,
+                        obscureText: controller.isObscure2.value,
                         hintText: 'Confirm password',
                         prefixIcon: Image.asset('assets/icon/lock.png'),
                         suffixIcon: IconButton(
-                          onPressed: () => controller.confPassVisible.toggle(),
-                          icon: controller.confPassVisible.value
-                              ? const Icon(Icons.visibility_outlined)
-                              : const Icon(Icons.visibility_off_outlined),
+                          onPressed: () => controller.isObscure2.toggle(),
+                          icon: controller.isObscure2.value
+                              ? const Icon(Icons.visibility_off_outlined)
+                              : const Icon(Icons.visibility_outlined),
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-              CustomButton(
-                text: 'Sign Up',
-                onPressed: () =>
-                    controller.formKey.currentState!.validate() ? null : null,
-              ),
+              Obx(() => CustomButton(
+                    content: controller.isLoading.value
+                        ? Center(child: CircularProgressIndicator())
+                        : Text("Sign Up"),
+                    onPressed: controller.isLoading.value
+                        ? null
+                        : () async => await controller.signUp(),
+                  )),
               Row(children: [
                 const Expanded(child: Divider()),
                 const SizedBox(width: 15),
@@ -113,7 +122,7 @@ class RegisterView extends GetView<RegisterController> {
                 const Expanded(child: Divider()),
               ]),
               CustomGoogleButton(
-                onPressed: () {},
+                onPressed: () async => controller.signUpWithGoogle(),
                 text: 'Sign Up With Google',
               ),
               const SizedBox(height: 40),
@@ -127,7 +136,8 @@ class RegisterView extends GetView<RegisterController> {
                     TextSpan(
                       text: 'Sign in',
                       style: const TextStyle(color: Colors.lightBlue),
-                      recognizer: TapGestureRecognizer()..onTap = () {},
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () => Get.offNamed(Routes.LOGIN),
                     ),
                   ],
                 ),
