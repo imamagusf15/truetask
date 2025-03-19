@@ -1,44 +1,22 @@
 import 'package:get/get.dart';
-import 'package:truetask/app/data/models/project.dart';
 import 'package:truetask/app/data/models/task.dart';
 import 'package:truetask/app/modules/home/controllers/home_controller.dart';
 
 class OverviewController extends GetxController {
-  final projects = RxList<Project>();
-  final tasks = RxList<Task>();
-  final searchedProject = RxList<Project>();
-  final searchedTask = RxList<Task>();
+  final projects = Get.find<HomeController>().projects;
+  final tasks = Get.find<HomeController>().tasks;
+  final searchedProject = Get.find<HomeController>().listProjectSearched;
+  final searchedTask = Get.find<HomeController>().listTaskSearched;
   final searchQuery = Get.find<HomeController>().searchQueries;
-  final isLoading = false.obs;
 
-  void getUserProjects() {
-    // Access listproject from HomeController
-    Get.find<HomeController>().projects.listen(
-          //Store the data to this projects variable
-          (listProject) => projects.assignAll(listProject),
-        );
+  List<Task> getProjectTasks(String projectId) {
+    return tasks.where((task) => task.projectId == projectId).toList();
   }
 
-  void getUserTasks() {
-    Get.find<HomeController>().tasks.listen(
-          (listTasks) => tasks.assignAll(listTasks),
-        );
-  }
-
-  void searchList() {
-    Get.find<HomeController>().listProjectSearched.listen(
-          (listProject) => searchedProject.assignAll(listProject),
-        );
-    Get.find<HomeController>().listTaskSearched.listen(
-          (listTask) => searchedTask.assignAll(listTask),
-        );
-  }
-
-  @override
-  void onInit() {
-    super.onInit();
-    getUserProjects();
-    getUserTasks();
-    searchList();
+  String getProjectTaskName(String taskProjectId) {
+    return projects
+        .where((project) => project.id == taskProjectId)
+        .map((e) => e.name!)
+        .single;
   }
 }

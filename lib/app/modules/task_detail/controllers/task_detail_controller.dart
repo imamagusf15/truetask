@@ -100,6 +100,25 @@ class TaskDetailController extends GetxController {
     );
   }
 
+  Future<void> deleteTask() async {
+    Get.back();
+
+    _firestoreService.deleteTask(taskId.value);
+
+    if (task.value.projectId != 'no-project') {
+      // // Fetch all the project task id
+      final projectTasks = await _firestoreService
+          .getProjectDataById(task.value.projectId!)
+          .then((value) => value.tasks ?? <String>[]);
+
+      // Add the new task to the previous project task
+      projectTasks.remove(taskId.value);
+
+      final data = {"tasks": projectTasks};
+      _firestoreService.updateProject(data, task.value.projectId!);
+    }
+  }
+
   Color? buttonStatusColor() {
     Color? colors;
     if (task.value.status == 'To Do') {

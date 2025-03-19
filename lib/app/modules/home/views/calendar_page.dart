@@ -45,17 +45,15 @@ class CalendarPage extends GetView<CalendarController> {
           Obx(
             () => ListView.separated(
               shrinkWrap: true,
-              itemCount: controller.tasks.length,
+              itemCount: controller.dueTasks.length,
               separatorBuilder: (context, index) => SizedBox(height: 4),
               itemBuilder: (context, index) {
-                final task = controller.tasks[index];
+                final task = controller.dueTasks[index];
                 if (task.projectId == 'no-project') {
                   return TaskCardItem(task: task, projectName: 'No Project');
                 } else {
-                  final projectName = controller.projects
-                      .where((project) => project.id == task.projectId)
-                      .map((e) => e.name!)
-                      .single;
+                  final projectName =
+                      controller.getProjectName(task.projectId!);
 
                   return TaskCardItem(task: task, projectName: projectName);
                 }

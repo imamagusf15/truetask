@@ -3,26 +3,31 @@ import 'package:truetask/app/data/models/task.dart';
 import 'package:truetask/app/modules/home/controllers/home_controller.dart';
 
 class CalendarController extends GetxController {
-  final tasks = RxList<Task>();
+  final dueTasks = RxList<Task>();
 
   // Access a variable projects from HomeController and store it
   final projects = Get.find<HomeController>().projects;
+  final tasks = Get.find<HomeController>().tasks;
 
   final selectedDate = DateTime.now().obs;
 
   void getUserTasks() {
-    // Access tasks stream and listen for everytime data is changes
-    Get.find<HomeController>().tasks.listen(
-      (listTask) {
-        // Insert all data where task dueDate is before or equal to selectedDate
-        tasks.assignAll(
-          listTask.where(
-            (field) => field.dueDate!
-                .isBefore(selectedDate.value.add(Duration(days: 1))),
-          ),
-        );
-      },
-    );
+    print(selectedDate.value);
+    // Insert all data where task dueDate is before or equal to selectedDate
+    final filteredTask = tasks
+        .where((task) => task.dueDate!.isBefore(
+              selectedDate.value.add(Duration(days: 1)),
+            ))
+        .toList();
+
+    dueTasks.assignAll(filteredTask);
+  }
+
+  String getProjectName(String taskProjectId) {
+    return projects
+        .where((project) => project.id == taskProjectId)
+        .map((e) => e.name ?? 'Unknown')
+        .single;
   }
 
   @override

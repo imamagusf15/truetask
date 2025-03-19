@@ -41,4 +41,14 @@ class CreateProjectController extends GetxController {
       return _db.createProject(project);
     }
   }
+
+  @override
+  void onClose() {
+    // TODO: implement onClose
+    super.onClose();
+    nameController.dispose();
+    descriptionController.dispose();
+    startDateController.dispose();
+    endDateController.dispose();
+  }
 }

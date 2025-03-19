@@ -18,32 +18,30 @@ class ProjectDetailController extends GetxController {
 
   final emailController = TextEditingController();
 
-  Future<void> getProject() async {
-    isLoading.value = true;
+  void getProject() {
     final stream = _firestoreService.fetchProjectById(projectId);
 
     project.bindStream(stream);
-    getTasksProject();
-    isLoading.value = false;
   }
 
   void getTasksProject() {
-    final stream = _firestoreService.getAllTask().map(
-          (tasks) => tasks
-              .where((task) => project.value.tasks?.contains(task.id) ?? false)
-              .toList(),
-        );
+    final stream = _firestoreService.getAllTask();
     tasks.bindStream(stream);
 
-    tasks.listen((taskList) {
+    ever(tasks, (listTask) {
+      // Return all project task id
+      final projectTasks = listTask
+          .where((task) => project.value.tasks?.contains(task.id) ?? false)
+          .toList();
+
       todoTasks.assignAll(
-        taskList.where((task) => task.status == 'To Do'),
+        projectTasks.where((task) => task.status == 'To Do'),
       );
       inProgressTasks.assignAll(
-        taskList.where((task) => task.status == 'In Progress'),
+        projectTasks.where((task) => task.status == 'In Progress'),
       );
       completedTasks.assignAll(
-        taskList.where((task) => task.status == 'Completed'),
+        projectTasks.where((task) => task.status == 'Completed'),
       );
     });
   }
@@ -91,6 +89,7 @@ class ProjectDetailController extends GetxController {
   void onInit() {
     super.onInit();
     getProject();
+    ever(project, (_) => getTasksProject());
   }
 
   @override
