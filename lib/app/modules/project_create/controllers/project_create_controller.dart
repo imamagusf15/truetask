@@ -38,8 +38,10 @@ class CreateProjectController extends GetxController {
         dueDate: DateTime.parse(endDateController.text),
         members: [user.uid!],
       );
-      return _db.createProject(project);
+      _db.createProject(project);
     }
+
+    Get.back();
   }
 
   @override

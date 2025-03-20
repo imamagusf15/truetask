@@ -43,17 +43,19 @@ class CreateTaskController extends GetxController {
       // Get the id from created task
       final newTaskId = await _firestoreService.createTask(newTask);
 
-      // // Fetch all the project task id
-      final projectTasks = await _firestoreService
-          .getProjectDataById(newTask.projectId!)
-          .then((value) => value.tasks ?? <String>[]);
+      if (newTask.projectId != 'no-project') {
+        // // Fetch all the project task id
+        final projectTasks = await _firestoreService
+            .getProjectDataById(newTask.projectId!)
+            .then((value) => value.tasks ?? <String>[]);
 
-      // Add the new task to the previous project task
-      projectTasks.add(newTaskId);
+        // Add the new task to the previous project task
+        projectTasks.add(newTaskId);
 
-      final data = {"tasks": projectTasks};
+        final data = {"tasks": projectTasks};
 
-      _firestoreService.updateProject(data, newTask.projectId!);
+        _firestoreService.updateProject(data, newTask.projectId!);
+      }
       Get.back();
     }
   }

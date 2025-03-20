@@ -46,9 +46,12 @@ class ProjectDetailController extends GetxController {
     });
   }
 
-  Future<void> deleteProject() {
+  Future<void> deleteProject() async {
     Get.back();
-    return _firestoreService.deleteProject(projectId);
+
+    Future.delayed(Duration(seconds: 1), () {
+      _firestoreService.deleteProject(projectId);
+    });
   }
 
   Future<void> updateProjectStatus() {
@@ -95,6 +98,7 @@ class ProjectDetailController extends GetxController {
   @override
   void onClose() {
     super.onClose();
+    project.close();
     emailController.dispose();
   }
 }

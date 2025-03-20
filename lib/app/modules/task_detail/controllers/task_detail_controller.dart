@@ -20,14 +20,15 @@ class TaskDetailController extends GetxController {
   void getTaskData() {
     isLoading.value = true;
 
-    taskPriority.value = 'Low';
     // Fetch task realtime data
     final stream = _firestoreService.getTaskById(taskId.value);
     task.bindStream(stream);
   }
 
   Future<Project> fetchProject() async {
-    if (task.value.projectId == 'no-project') {}
+    if (task.value.projectId == 'no-project') {
+      return Project();
+    }
     return await _firestoreService.getProjectDataById(task.value.projectId!);
   }
 
@@ -37,7 +38,7 @@ class TaskDetailController extends GetxController {
     // Fetch Project data from task project id
     final project = await fetchProject();
 
-    projectName.value = project.name ?? '';
+    projectName.value = project.name ?? 'No Project';
 
     if (project.members != null) {
       for (var uid in project.members!) {
@@ -103,8 +104,6 @@ class TaskDetailController extends GetxController {
   Future<void> deleteTask() async {
     Get.back();
 
-    _firestoreService.deleteTask(taskId.value);
-
     if (task.value.projectId != 'no-project') {
       // // Fetch all the project task id
       final projectTasks = await _firestoreService
@@ -117,6 +116,9 @@ class TaskDetailController extends GetxController {
       final data = {"tasks": projectTasks};
       _firestoreService.updateProject(data, task.value.projectId!);
     }
+    Future.delayed(Duration(seconds: 1), () {
+      _firestoreService.deleteTask(taskId.value);
+    });
   }
 
   Color? buttonStatusColor() {
@@ -154,5 +156,11 @@ class TaskDetailController extends GetxController {
     getTaskData();
 
     once(task, (_) => getProjectMembers());
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+    task.close();
   }
 }

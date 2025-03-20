@@ -79,7 +79,7 @@ class TaskDetailView extends GetView<TaskDetailController> {
                   const SizedBox(height: 40),
                   Center(
                     child: Text(
-                      task.description ?? '',
+                      task.description ?? 'Loading..',
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
@@ -124,7 +124,7 @@ class TaskDetailView extends GetView<TaskDetailController> {
                                 () => TextButton.icon(
                                   onPressed: () =>
                                       controller.updateTaskPriority(),
-                                  label: Text(controller.taskPriority.value),
+                                  label: Text(task.priority ?? 'Loading..'),
                                   style: TextButton.styleFrom(
                                     iconColor: controller.flagColor(),
                                   ),
