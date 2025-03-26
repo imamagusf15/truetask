@@ -9,7 +9,17 @@ class OverviewController extends GetxController {
   final searchedProject = RxList<Project>();
   final searchedTask = RxList<Task>();
   final searchQuery = Get.find<HomeController>().searchQueries;
-  final isLoading = false.obs;
+
+  List<Task> getProjectTasks(String projectId) {
+    return tasks.where((task) => task.projectId == projectId).toList();
+  }
+
+  String getProjectTaskName(String taskProjectId) {
+    return projects
+        .where((project) => project.id == taskProjectId)
+        .map((e) => e.name!)
+        .single;
+  }
 
   void getUserProjects() {
     // Access listproject from HomeController
@@ -25,20 +35,10 @@ class OverviewController extends GetxController {
         );
   }
 
-  void searchList() {
-    Get.find<HomeController>().listProjectSearched.listen(
-          (listProject) => searchedProject.assignAll(listProject),
-        );
-    Get.find<HomeController>().listTaskSearched.listen(
-          (listTask) => searchedTask.assignAll(listTask),
-        );
-  }
-
   @override
   void onInit() {
     super.onInit();
     getUserProjects();
     getUserTasks();
-    searchList();
   }
 }

@@ -6,22 +6,19 @@ import 'package:truetask/app/routes/app_pages.dart';
 class SplashController extends GetxController {
   void checkAuthState() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    // Reads a value from local storage key named displayedOnboarding
-    final bool? displayedOnboarding = prefs.getBool('displayedOnboarding');
-
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      // Reads a value from local storage key named displayedOnboarding
+      final bool? displayedOnboarding = prefs.getBool('displayedOnboarding');
       if (user == null) {
-        // print('User is currently signed out!');
         if (displayedOnboarding == true) {
           // If OnboardingPage has displayed once navigate to Login
-          Get.offNamed(Routes.LOGIN);
+          Get.offAllNamed(Routes.LOGIN);
         } else {
           // If OnboardingPage has not displayed once navigate to it
-          Get.offNamed(Routes.ONBOARDING);
+          Get.offAllNamed(Routes.ONBOARDING);
         }
       } else {
-        // print('User is signed in!');
-        Get.offNamed(Routes.HOME);
+        Get.offAllNamed(Routes.HOME);
       }
     });
   }

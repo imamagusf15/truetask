@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:truetask/app/global_widgets/appbar_menu_button.dart';
 
 import '../controllers/task_detail_controller.dart';
 
@@ -16,8 +15,8 @@ class TaskDetailView extends GetView<TaskDetailController> {
         title: Obx(() => Text(controller.task.value.title ?? 'Loading..')),
         centerTitle: true,
         actions: [
-          AppbarMenuButton(
-            menuItemList: (p0) => [
+          PopupMenuButton(
+            itemBuilder: (context) => [
               PopupMenuItem(
                 child: const Text("Assign member"),
                 onTap: () => Get.defaultDialog(
@@ -46,7 +45,11 @@ class TaskDetailView extends GetView<TaskDetailController> {
                     ),
                   ),
                 ),
-              )
+              ),
+              PopupMenuItem(
+                child: Text("Delete"),
+                onTap: () => controller.deleteTask(),
+              ),
             ],
           )
         ],
@@ -76,7 +79,7 @@ class TaskDetailView extends GetView<TaskDetailController> {
                   const SizedBox(height: 40),
                   Center(
                     child: Text(
-                      task.description ?? '',
+                      task.description ?? 'Loading..',
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
@@ -121,7 +124,7 @@ class TaskDetailView extends GetView<TaskDetailController> {
                                 () => TextButton.icon(
                                   onPressed: () =>
                                       controller.updateTaskPriority(),
-                                  label: Text(controller.taskPriority.value),
+                                  label: Text(task.priority ?? 'Loading..'),
                                   style: TextButton.styleFrom(
                                     iconColor: controller.flagColor(),
                                   ),

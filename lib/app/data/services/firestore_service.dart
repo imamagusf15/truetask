@@ -258,6 +258,15 @@ class FirestoreService {
     }
   }
 
+  Future<void> deleteTask(String taskId) {
+    try {
+      final docRef = _db.collection("tasks").doc(taskId);
+      return _firestoreRepository.deleteData(docRef);
+    } on FirebaseException catch (e) {
+      throw Exception(e);
+    }
+  }
+
   Future<void> sendInvitation(Invitation invitation) {
     try {
       final docRef = _db.collection('invitations').doc().withConverter(

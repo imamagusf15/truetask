@@ -12,33 +12,51 @@ class CompletedProjectView extends GetView<CompletedProjectController> {
     return Obx(
       () => controller.searchQuery.value == ''
           ? ListView.separated(
-              itemCount: controller.completedProjects.length,
+              shrinkWrap: true,
+              itemCount: controller.completedProjects.isEmpty
+                  ? 1
+                  : controller.completedProjects.length,
               separatorBuilder: (context, index) => const SizedBox(height: 8),
               itemBuilder: (context, index) {
-                final project = controller.completedProjects[index];
-                return Obx(() {
+                if (controller.completedProjects.isNotEmpty) {
+                  final project = controller.completedProjects[index];
                   final projectTasks = controller.getProjectTasks(project.id!);
                   return ProjectCardItem(
                     project: project,
                     users: project.members!,
                     tasks: projectTasks,
                   );
-                });
+                } else {
+                  return SizedBox(
+                    width: 320,
+                    height: 140,
+                    child: Center(child: Text('Empty Project')),
+                  );
+                }
               },
             )
           : ListView.separated(
-              itemCount: controller.searchedProject.length,
+              shrinkWrap: true,
+              itemCount: controller.searchedProject.isEmpty
+                  ? 1
+                  : controller.searchedProject.length,
               separatorBuilder: (context, index) => const SizedBox(height: 8),
               itemBuilder: (context, index) {
-                final project = controller.searchedProject[index];
-                return Obx(() {
+                if (controller.searchedProject.isNotEmpty) {
+                  final project = controller.searchedProject[index];
                   final projectTasks = controller.getProjectTasks(project.id!);
                   return ProjectCardItem(
                     project: project,
                     users: project.members!,
                     tasks: projectTasks,
                   );
-                });
+                } else {
+                  return SizedBox(
+                    width: 320,
+                    height: 140,
+                    child: Center(child: Text('No project found')),
+                  );
+                }
               },
             ),
     );

@@ -43,9 +43,8 @@ class OverviewPage extends GetView<OverviewController> {
                         if (controller.projects.isNotEmpty) {
                           final project = controller.projects[index];
                           return Obx(() {
-                            final projectTasks = controller.tasks
-                                .where((task) => task.projectId == project.id)
-                                .toList();
+                            final projectTasks =
+                                controller.getProjectTasks(project.id!);
                             return ProjectCardItem(
                               project: project,
                               users: project.members!,
@@ -74,9 +73,8 @@ class OverviewPage extends GetView<OverviewController> {
                         if (controller.searchedProject.isNotEmpty) {
                           final project = controller.searchedProject[index];
                           return Obx(() {
-                            final projectTasks = controller.tasks
-                                .where((task) => task.projectId == project.id)
-                                .toList();
+                            final projectTasks =
+                                controller.getProjectTasks(project.id!);
                             return ProjectCardItem(
                               project: project,
                               users: project.members!,
@@ -126,10 +124,8 @@ class OverviewPage extends GetView<OverviewController> {
                             projectName: 'No Project',
                           );
                         } else {
-                          final projectName = controller.projects
-                              .where((project) => project.id == task.projectId)
-                              .map((e) => e.name!)
-                              .single;
+                          final projectName =
+                              controller.getProjectTaskName(task.projectId!);
                           return TaskCardItem(
                             task: task,
                             projectName: projectName,
@@ -158,10 +154,8 @@ class OverviewPage extends GetView<OverviewController> {
                             projectName: 'No Project',
                           );
                         } else {
-                          final projectName = controller.projects
-                              .where((project) => project.id == task.projectId)
-                              .map((e) => e.name!)
-                              .single;
+                          final projectName =
+                              controller.getProjectTaskName(task.projectId!);
                           return TaskCardItem(
                             task: task,
                             projectName: projectName,

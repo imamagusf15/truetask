@@ -40,16 +40,23 @@ class CreateTaskController extends GetxController {
         dueDate: DateTime.parse(endDateController.text),
       );
 
+      // Get the id from created task
       final newTaskId = await _firestoreService.createTask(newTask);
 
-      final choosenProject =
-          await _firestoreService.getProjectDataById(newTask.projectId!);
+      if (newTask.projectId != 'no-project') {
+        // // Fetch all the project task id
+        final projectTasks = await _firestoreService
+            .getProjectDataById(newTask.projectId!)
+            .then((value) => value.tasks ?? <String>[]);
 
-      choosenProject.tasks!.add(newTaskId);
+        // Add the new task to the previous project task
+        projectTasks.add(newTaskId);
 
-      final data = {"tasks": choosenProject.tasks!};
+        final data = {"tasks": projectTasks};
 
-      _firestoreService.updateProject(data, newTask.projectId!);
+        _firestoreService.updateProject(data, newTask.projectId!);
+      }
+      Get.back();
     }
   }
 
@@ -58,5 +65,15 @@ class CreateTaskController extends GetxController {
     super.onInit();
     // Store the passed String data via Route args, if null set to 'no-project'
     selectedProjectId.value = Get.arguments ?? 'no-project';
+  }
+
+  @override
+  void onClose() {
+    // TODO: implement onClose
+    super.onClose();
+    nameController.dispose();
+    descriptionController.dispose();
+    startDateController.dispose();
+    endDateController.dispose();
   }
 }

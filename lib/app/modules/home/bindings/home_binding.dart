@@ -10,7 +10,11 @@ class HomeBinding extends Bindings {
     Get.lazyPut<HomeController>(
       () => HomeController(),
     );
-    Get.put<OverviewController>(OverviewController());
-    Get.put<CalendarController>(CalendarController());
+    Get.lazyPut<OverviewController>(
+      () => OverviewController(),
+    );
+    Get.lazyPut<CalendarController>(
+      () => CalendarController(),
+    );
   }
 }
