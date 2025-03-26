@@ -74,9 +74,8 @@ class AuthService {
       final isGoogleAccount = await _googleAuth.isSignedIn();
       if (isGoogleAccount) {
         await _googleAuth.signOut();
-      } else {
-        await _auth.signOut();
       }
+      await _auth.signOut();
     } on FirebaseAuthException catch (e) {
       throw Exception(e);
     }

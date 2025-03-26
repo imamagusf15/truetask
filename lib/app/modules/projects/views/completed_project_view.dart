@@ -18,8 +18,8 @@ class CompletedProjectView extends GetView<CompletedProjectController> {
                   : controller.completedProjects.length,
               separatorBuilder: (context, index) => const SizedBox(height: 8),
               itemBuilder: (context, index) {
-                final project = controller.completedProjects[index];
                 if (controller.completedProjects.isNotEmpty) {
+                  final project = controller.completedProjects[index];
                   final projectTasks = controller.getProjectTasks(project.id!);
                   return ProjectCardItem(
                     project: project,

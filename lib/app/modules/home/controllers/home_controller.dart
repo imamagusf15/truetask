@@ -8,8 +8,7 @@ import 'package:truetask/app/data/models/user_model.dart';
 import 'package:truetask/app/data/services/auth_service.dart';
 import 'package:truetask/app/data/services/firestore_service.dart';
 
-class HomeController extends GetxController
-    with GetSingleTickerProviderStateMixin {
+class HomeController extends GetxController {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final _firestoreService = FirestoreService();
   final _authService = AuthService();
@@ -86,13 +85,19 @@ class HomeController extends GetxController
   }
 
   void closeStream() {
-    projects.close();
-    tasks.close();
+    if (!projects.subject.isClosed) projects.close();
+    if (!tasks.subject.isClosed) tasks.close();
+    if (!listProjectSearched.subject.isClosed) listProjectSearched.close();
+    if (!listTaskSearched.subject.isClosed) listTaskSearched.close();
   }
 
-  Future<void> logout() {
+  void logout() {
     closeStream();
-    return _authService.userLogout();
+
+    Future.delayed(
+      Duration(milliseconds: 300),
+      () => _authService.userLogout(),
+    );
   }
 
   @override

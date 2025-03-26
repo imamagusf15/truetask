@@ -44,6 +44,7 @@ class CalendarPage extends GetView<CalendarController> {
           const SizedBox(height: 8),
           Obx(
             () => ListView.separated(
+              physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemCount: controller.dueTasks.length,
               separatorBuilder: (context, index) => SizedBox(height: 4),

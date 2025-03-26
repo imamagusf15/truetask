@@ -12,7 +12,6 @@ class CalendarController extends GetxController {
   final selectedDate = DateTime.now().obs;
 
   void getUserTasks() {
-    print(selectedDate.value);
     // Insert all data where task dueDate is before or equal to selectedDate
     final filteredTask = tasks
         .where((task) => task.dueDate!.isBefore(
